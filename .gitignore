@@ -2,4 +2,5 @@ node_modules/
 dist/
 reports/
 AGENTS.md
+.env
 .idea
