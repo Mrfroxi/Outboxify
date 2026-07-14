@@ -61,6 +61,47 @@ export class AuthService {
     return user;
   }
 
+  async oauthLogin(profile: {
+    provider: 'google' | 'github';
+    providerId: string;
+    email: string;
+    displayName?: string | null;
+    avatarUrl?: string | null;
+  }) {
+    const idField = profile.provider === 'google' ? 'googleId' : 'githubId';
+
+    let user = await this.prisma.user.findUnique({
+      where: { [idField]: profile.providerId } as never,
+    });
+
+    if (!user) {
+      user = await this.prisma.user.findUnique({
+        where: { email: profile.email },
+      });
+
+      if (user) {
+        user = await this.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            [idField]: profile.providerId,
+            avatarUrl: profile.avatarUrl ?? user.avatarUrl,
+          },
+        });
+      } else {
+        user = await this.prisma.user.create({
+          data: {
+            email: profile.email,
+            [idField]: profile.providerId,
+            displayName: profile.displayName,
+            avatarUrl: profile.avatarUrl,
+          },
+        });
+      }
+    }
+
+    return this.buildResponse(user);
+  }
+
   private buildResponse(user: {
     id: string;
     email: string;
