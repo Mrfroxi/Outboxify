@@ -4,3 +4,6 @@ reports/
 AGENTS.md
 .env
 .idea
+
+# Prisma generated client
+apps/*/src/generated/
