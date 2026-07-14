@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Venue {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  rowsCount Int
+  seatsPerRow Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events Event[]
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  date        DateTime
+  priceCents  Int
+  currency    String   @default("USD")
+  venueId     String
+  venue       Venue    @relation(fields: [venueId], references: [id])
+  status      EventStatus @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  seats Seat[]
+}
+
+model Seat {
+  id        String     @id @default(uuid())
+  eventId    String
+  event      Event      @relation(fields: [eventId], references: [id])
+  row        Int
+  number     Int
+  status     SeatStatus @default(FREE)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([eventId, row, number])
+}
+
+model Outbox {
+  id        String   @id @default(uuid())
+  aggregateId String
+  aggregateType String
+  eventType String
+  payload   Json
+  createdAt DateTime @default(now())
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+}
+
+enum SeatStatus {
+  FREE
+  LOCKED
+  BOOKED
+}

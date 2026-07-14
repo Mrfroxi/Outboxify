@@ -16,7 +16,10 @@
     "test:gateway": "jest --config ./apps/gateway/test/jest-e2e.json",
     "prisma:generate:auth": "prisma generate --config apps/auth-service/prisma.config.ts",
     "prisma:migrate:auth": "prisma migrate dev --config apps/auth-service/prisma.config.ts",
-    "prisma:studio:auth": "prisma studio --config apps/auth-service/prisma.config.ts"
+    "prisma:studio:auth": "prisma studio --config apps/auth-service/prisma.config.ts",
+    "prisma:generate:admin": "prisma generate --config apps/admin-service/prisma.config.ts",
+    "prisma:migrate:admin": "prisma migrate dev --config apps/admin-service/prisma.config.ts",
+    "prisma:studio:admin": "prisma studio --config apps/admin-service/prisma.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
